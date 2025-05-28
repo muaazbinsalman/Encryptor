@@ -15,12 +15,12 @@ Built using **C++ for CGI scripting** with a **JavaScript-powered frontend** for
 ✅ **AJAX-Powered**: Frontend dynamically communicates with backend.  
 
 ## 🛠 Installation
-### 1️⃣ **Clone the Repository**
+### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/your-username/Encryptor.git
 ```
 
-### 2️⃣ **Setup on XAMPP (Apache Server)**
+### 2️⃣ Setup on XAMPP (Apache Server)
 - Place project files in `C:/xampp/htdocs/Encryptor/`
 - Ensure `.htaccess` allows CGI execution:
   ```
@@ -28,13 +28,13 @@ git clone https://github.com/your-username/Encryptor.git
   AddHandler cgi-script .cgi
   ```
 
-### 3️⃣ **Compile the CGI Script**
+### 3️⃣ Compile the CGI Script
 ```bash
 cd C:/xampp/htdocs/Encryptor
 g++ encryptor.cpp -o encryptor.cgi -O2
 ```
 
-### 4️⃣ **Restart Apache & Open Browser**
+### 4️⃣ Restart Apache & Open Browser
 Visit:
 ```
 http://localhost/Encryptor/index.html
@@ -61,6 +61,10 @@ Want to improve Encryptor? Feel free to:
 - **Fork the repo**
 - **Create a pull request**
 - **Suggest enhancements**
+
+## 👥 Contributors
+🚀 **Muaaz Bin Salman** – Lead Developer & Main Contributor  
+🛠️ **Aayan Rashid** – Co-Author 
 
 ## 📖 License
 This project is licensed under the **MIT License**.
