@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>File Encryption &amp; Decryption Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #0D0D0D;
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #111;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.2rem;
+      font-weight: 600;
+    }
+    h2 {
+      margin-top: 20px;
+      font-size: 1.6rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+    }
+    .form-section {
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+      font-size: 1rem;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .save-button {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    .save-button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #222;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>File Encryption &amp; Decryption Manager</h1>
+
+    <!-- Create File Section -->
+    <div class="form-section">
+      <h2>Create File</h2>
+      <!-- Action attribute now points to /Encryptor/encryptor.cgi -->
+      <form id="createForm" class="ajax-form" action="/Encryptor/encryptor.cgi" method="get">
+        <input type="hidden" name="action" value="create">
+        <div class="form-group">
+          <label for="create-filename">Filename:</label>
+          <input type="text" id="create-filename" name="filename" required>
+        </div>
+        <div class="form-group">
+          <label for="create-content">Content:</label>
+          <textarea id="create-content" name="content" required></textarea>
+        </div>
+        <button type="submit" class="save-button">Create File</button>
+      </form>
+      <div id="result-create" class="result"></div>
+    </div>
+
+    <!-- Encrypt File Section -->
+    <div class="form-section">
+      <h2>Encrypt File</h2>
+      <form id="encryptForm" class="ajax-form" action="/Encryptor/encryptor.cgi" method="get">
+        <input type="hidden" name="action" value="encrypt">
+        <div class="form-group">
+          <label for="encrypt-source">Source Filename:</label>
+          <input type="text" id="encrypt-source" name="filename" required>
+        </div>
+        <div class="form-group">
+          <label for="encrypt-output">Encrypted Filename:</label>
+          <input type="text" id="encrypt-output" name="outputFile" required>
+        </div>
+        <div class="form-group">
+          <label for="encrypt-key">Key (1-25):</label>
+          <input type="number" id="encrypt-key" name="key" min="1" max="25">
+        </div>
+        <button type="submit" class="save-button">Encrypt File</button>
+      </form>
+      <div id="result-encrypt" class="result"></div>
+    </div>
+
+    <!-- Decrypt File Section -->
+    <div class="form-section">
+      <h2>Decrypt File</h2>
+      <form id="decryptForm" class="ajax-form" action="/Encryptor/encryptor.cgi" method="get">
+        <input type="hidden" name="action" value="decrypt">
+        <div class="form-group">
+          <label for="decrypt-source">Encrypted Filename:</label>
+          <input type="text" id="decrypt-source" name="filename" required>
+        </div>
+        <div class="form-group">
+          <label for="decrypt-output">Decrypted Filename:</label>
+          <input type="text" id="decrypt-output" name="outputFile" required>
+        </div>
+        <div class="form-group">
+          <label for="decrypt-key">Key:</label>
+          <input type="number" id="decrypt-key" name="key" required>
+        </div>
+        <button type="submit" class="save-button">Decrypt File</button>
+      </form>
+      <div id="result-decrypt" class="result"></div>
+    </div>
+  </div>
+  <script>
+    // Using an explicit absolute URL in our AJAX call to eliminate any relative path issues.
+    // ALSO, ensure you are accessing index.html via http://localhost/Encryptor/index.html!
+    document.querySelectorAll('.ajax-form').forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const queryString = new URLSearchParams(formData).toString();
+        // Use the complete URL for the CGI script:
+        const requestUrl = "http://localhost/Encryptor/encryptor.cgi?" + queryString;
+        console.log("Requesting: " + requestUrl); // Verify the URL in the browser console
+        fetch(requestUrl)
+          .then(response => response.text())
+          .then(data => {
+            let resultDiv = form.querySelector(".result") || form.nextElementSibling;
+            resultDiv.innerHTML = data;
+          })
+          .catch(error => console.error("Error:", error));
+      });
+    });
+  </script>
+</body>
+</html>
